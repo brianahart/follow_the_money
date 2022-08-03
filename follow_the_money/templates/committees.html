@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Follow the Money</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <div class="sidebar-brand-text mx-3">Follow <p>the</p> Money</div>
+    </a>
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - 1 -->
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('flaskapp') }}">
+        <span>Candidate Donations Map</span></a>
+    </li>
+
+    <!-- Nav Item - 2 -->
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('network', selected_state='DC' ) }}">
+        <span>Donation Network by State</span></a>
+    </li>
+
+    <!-- Nav Item - 3 -->
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('candidates') }}">
+        <span>Candidate Fundraising</span></a>
+    </li>
+
+    <!-- Nav Item - 4 -->
+    <li class="nav-item active">
+      <a class="nav-link" href="{{ url_for('committees') }}">
+        <span>Committee Donations</span></a>
+    </li>
+    <div class="sidebar-card">
+      <p class="text-center"><b>UC Berkeley MIDS</br>W209 Data Visualization </b></p>
+      <p class="text-center">Neil Bhatia, Briana Hart, Anand Patel, Madeline Whitlow</p>
+    </div>
+  </ul>
+  <!-- End of Sidebar -->
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
+      <!-- Topbar -->
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <h4>Committee Donations</h4>
+      </nav>
+      <!-- End of Topbar -->
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Committee's Donations Given</h6>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body">
+            <h5>About the Data</h5>
+            <p>
+              Data Source: Political Campaign Donations for the 2022 Campaign Cycle.
+              Link: <a href="https://www.fec.gov/data/browse-data/?tab=bulk-data">FEC Government 2022 Donation Data Download</a>
+            <p>
+            <p>
+              Data dictionaries are included at the link above.
+            <p>
+
+            <p>
+              Committees are donators to politicians, and they can be organizations, companies, or political action groups. Committees have organization types that they classify themselves as. Organization types include cooperatives, corporations, corporations without capital stock, labor organizations, membership organizations, or trade organizations. However, most committees are unclassified. Committee donations show up as Transactions for candidates.
+            <p>
+
+
+            <hr>
+            <h5>All Committees with Detail</h5>
+            <p>
+
+              This chart lets users see which committees were the most donated to, and select the committee from the left to see a detailed breakdown of the candidates it donated to, ordered by the donatation amount. This chart lists committees in the left column ordered by their total donation amounts, filters and legends for the results in the middle column, and detailed view of candidates for a selected committee on the right column.
+            </p>
+
+
+            <p>
+              Users can select one or more committees (using "Ctrl hold + click") from the left chart and see their candidate breakdown on the right.
+
+            <li> Users can filter the left chart by specifying specific committees by typing their name and selecting the matching committee in the dropdown menu. </li>
+
+            <li> Users can filter to include donations to candidates only from selected states, from selected partys, or from selected office types. This will change the size of bars on the left and the rows on the detailed chart on the right. </li>
+
+            <li> Users can filter to include committees of specified organization types. </li>
+
+            <li> Users can specify a range for total donation amounts to display on the left chart. User can also filter the detailed chart on the right to include donations to candidates within a specified range. </li>
+
+            <li> Users may hover over names and marks on the chart for tooltips that include greater detail. If a tooltip has an "*" value, that means there are multiple values for that field. The tooltip also has an option to "View Data" if the hover is held. </li>
+            </p>
+
+
+
+            <!-- All Committees with Detail: https://public.tableau.com/app/profile/anand.patel6869/viz/AllCommitteeswithDetail/AllCommitteeswithDetail -->
+            <div class='tableauPlaceholder' id='viz1657732186209' style='position: relative'><noscript><a href='#'><img alt='All Committees with Detail ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;2K&#47;2KSBT338D&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='path' value='shared&#47;2KSBT338D' /> <param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;2K&#47;2KSBT338D&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1657732186209');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1600px';vizElement.style.height='1227px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1600px';vizElement.style.height='1227px';} else { vizElement.style.width='100%';vizElement.style.height='1377px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+
+
+            <hr>
+
+            <h5>Committee's Candidate Breakdown and Comparisons</h5>
+
+            <p>
+              Users must type in, search, and select 2 committees from the drop down menu to compare the candidates they donated to.
+
+              Committees will show up on the columns, candidates are on the rows.
+
+              The length of the bars are the total transaction amount that a candidate received from the committee in that column.
+
+              For a given candidate, if both committees have a non-zero transaction amount on that row then they both donated to that politician.
+
+            </p>
+
+            <!-- Side by Side Committee Comparison: https://public.tableau.com/app/profile/anand.patel6869/viz/SidebySideCommitteeComparison/SidebySideCommitteeComparison?publish=yes  -->
+            <div class='tableauPlaceholder' id='viz1656643802458' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Si&#47;SidebySideCommitteeComparison&#47;SidebySideCommitteeComparison&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='SidebySideCommitteeComparison&#47;SidebySideCommitteeComparison' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Si&#47;SidebySideCommitteeComparison&#47;SidebySideCommitteeComparison&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1656643802458');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+
+
+            <hr>
+
+            <h5>Committee's Map for Candidate Donations</h5>
+            <p>
+
+              User must select a committee and the map will display marks for the candidates it donated to.
+
+            <li> The map can be zoomed in and out at the cursor using the mouse wheel. </li>
+
+            <li> The map can be panned by holding "Shift" and dragging the cursor. </li>
+
+            <li> Double clicking the map will zoom in at the cursor. </li>
+
+            <li> Hovering your cursor on the map will let a vertical navigation panel appear on the left. The magnifying glass lets the user search for a specific place on the map and zooms the view accordingly. The home button (house icon) will reset the view of the map. </li>
+
+            &emsp; <img src="{{url_for('static', filename='map_nav_panel.PNG')}}" width=5%">
+
+            <li> Users may adjust the range of the Total Donation Amount to display on the map or filter out some candidates by their elected office type or party. </li>
+
+            </p>
+
+            <!-- Candidate Donation Map for Committee: https://public.tableau.com/app/profile/anand.patel6869/viz/CandidateDonationMapforCommittee/CandidateDonationMapforCommittee?publish=yes  -->
+            <div class='tableauPlaceholder' id='viz1656643903445' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;CandidateDonationMapforCommittee&#47;CandidateDonationMapforCommittee&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='CandidateDonationMapforCommittee&#47;CandidateDonationMapforCommittee' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;CandidateDonationMapforCommittee&#47;CandidateDonationMapforCommittee&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1656643903445');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+            </div>
+          </div>
+        </div>
+        <!-- End of Main Content -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+</div>
+</div>
+</body>
+</html>

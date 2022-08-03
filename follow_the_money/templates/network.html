@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Follow the Money</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/d3-force-boundary@0.0.1/dist/d3-force-boundary.min.js"></script>
+
+    <!-- Dropdown JS-->
+    <script type="application/javascript">
+        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
+        function dropdownFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('#dropdownBtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <div class="sidebar-brand-text mx-3">Follow <p>the</p> Money</div>
+        </a>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - 1 -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('flaskapp') }}">
+                <span>Candidate Donations Map</span></a>
+        </li>
+
+        <!-- Nav Item - 2 -->
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('network', selected_state='DC') }}">
+                <span>Donation Network by State</span></a>
+        </li>
+
+        <!-- Nav Item - 3 -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('candidates') }}">
+                <span>Candidate Fundraising</span></a>
+        </li>
+
+        <!-- Nav Item - 4 -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('committees') }}">
+                <span>Committee Donations</span></a>
+        </li>
+        <div class="sidebar-card">
+            <p class="text-center"><b>UC Berkeley MIDS</br>W209 Data Visualization </b></p>
+            <p class="text-center">Neil Bhatia, Briana Hart, Anand Patel, Madeline Whitlow</p>
+        </div>
+    </ul>
+    <!-- End of Sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <h4>Donation Network by State</h4>
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary" id="page_subtitle">Committee to Candidate Network:
+                            {{selected_state_long}}</h6>
+                        <form action="/network" method="post">
+
+                            <div class="dropdown">
+                                <a role="button" onclick="dropdownFunction()" id="dropdownBtn" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">State: {{selected_state}}</a>
+                                <div id="myDropdown" class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                    {%for key,value in states.items()%}
+                                        <a href="{{ url_for('network', selected_state=key) }}"
+                                            value="{{key}}"
+                                            class="dropdown-item"
+                                            type="submit">{{value}}</a>
+
+                                    {%endfor%}
+                                    <!--onclick="setSelect('{{key}}', '{{value}}')" name="selected_state"-->
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <p>Select a state from the dropdown. Candidates are in orange and committees are in grey. If
+                            you hover over a circle, a tooltip will show with the candidate name/committee name. If
+                            you hover over a node, the tooltip will show the donation amount. This tool allows you to
+                            map which committees are donating to which candidates.
+                        </p>
+                        <div class="chart-area">
+                            <script type="text/javascript">
+
+                                var data = {{ data | tojson}};
+
+                                function drawChart(container, data){
+                                    const chartWidth = 800;
+                                    const chartHeight = 600;
+                                    let circle_selected = false;
+
+                                    const margin = { left: 50, right: 20, top: 20, bottom: 50 },
+                                        iwidth = chartWidth - margin.left - margin.right,
+                                        iheight = chartHeight - margin.top - margin.bottom;
+
+                                    const links = data.links.map(d => Object.create(d));
+                                    const nodes = data.nodes.map(d => Object.create(d));
+
+                                    const simulation = d3.forceSimulation(nodes)
+                                        .force("link", d3.forceLink(links).id(d => d.id))
+                                        .force("charge", d3.forceManyBody().strength(-20))
+                                        .force("center", d3.forceCenter(iwidth / 2, iheight / 2))
+                                        .force("boundary", forceBoundary(4, 4, iwidth, iheight));
+
+                                    const svg = d3.select(container).append('svg')
+                                        .attr("viewBox", [0, 0, chartWidth, chartHeight])
+
+                                    // links
+                                    const link = svg.append("g")
+                                        .attr("stroke", "#999")
+                                        .attr("stroke-opacity", 0.6)
+                                        .selectAll("line")
+                                        .data(links)
+                                        .join("line")
+                                        .attr("stroke-width", d => Math.log(d.value) / 4)
+                                        .on("mouseover", function(d){
+                                            tooltip.transition()
+                                                .duration(200)
+                                                .style("opacity", .9);
+                                            tooltip	.html(
+                                                "Donation Amt: $" + (d.value) + "<br/>"
+                                            )
+                                                .style("left", (d3.event.pageX) + "px")
+                                                .style("top", (d3.event.pageY - 28) + "px");
+                                        })
+                                        .on("mouseout", function(){
+                                            tooltip.transition()
+                                                .duration(500)
+                                                .style("opacity", 0);
+                                        });
+
+                                    // nodes
+                                    const node = svg.append("g")
+                                        .selectAll(".node")
+                                        .data(nodes)
+                                        .join("g")
+                                        .attr('class', 'node')
+                                        .call(drag(simulation));
+
+                                    // tooltips html and css
+                                    var tooltip = d3.select("body")
+                                        .append("div")
+                                        .attr("class", "tooltip")
+                                        .style("opacity", 0)
+                                        .style("position", "absolute")
+                                        .style("text-align", "left")
+                                        .style("vertical-align", "middle")
+                                        .style("width", "auto")
+                                        .style("min-width", "100px")
+                                        .style("max-width", "300px")
+                                        .style("height", "auto")
+                                        .style("padding", "4px 6px")
+                                        .style("font", "14px sans-serif")
+                                        .style("color", "black")
+                                        .style("background", "lightsteelblue")
+                                        .style("border", "0px")
+                                        .style("border-radius", "4px")
+                                        .style("pointer-events", "none")
+                                    ;
+
+                                    // circles and tooltips
+                                    node.append("circle")
+                                        .attr("r", 5)
+                                        .attr("fill", circleColour)
+                                        .attr("class", "not_selected")
+                                        .on("click", function(d) {
+                                            if (circle_selected == false) {
+                                                link.attr("display", function (l) {
+                                                    if (d === l.source || d === l.target)
+                                                        return "block";
+                                                    else
+                                                        return "none";
+                                                });
+                                                circle_selected = true;
+                                            }
+                                            else {
+                                                link.attr("display", "block");
+                                                circle_selected = false;
+                                            }
+                                        })
+                                        .on("mouseover", function(d){
+                                            tooltip.transition()
+                                                .duration(200)
+                                                .style("opacity", .9);
+                                            tooltip	.html(
+                                                (d.id) + "<br/>"
+                                            )
+                                                .style("left", (d3.event.pageX) + "px")
+                                                .style("top", (d3.event.pageY - 28) + "px");
+                                        })
+                                        .on("mouseout", function(){
+                                            tooltip.transition()
+                                                .duration(500)
+                                                .style("opacity", 0);
+                                        });
+
+                                    simulation.on("tick", () => {
+                                        link
+                                            .attr("x1", d => d.source.x)
+                                            .attr("y1", d => d.source.y)
+                                            .attr("x2", d => d.target.x)
+                                            .attr("y2", d => d.target.y);
+
+                                        node
+                                            .attr("transform", d => `translate(${d.x}, ${d.y})`);
+                                    });
+
+                                    // invalidation.then(() => simulation.stop());
+
+                                    return svg.node();
+                                };
+
+                                // circle color
+                                function circleColour(d){
+                                    if(d.group == 1){
+                                        return "grey";
+                                    } else {
+                                        return "orange";
+                                    }
+                                };
+
+
+                                drag = simulation => {
+
+                                    function dragstarted(d) {
+                                        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                                        d.fx = d.x;
+                                        d.fy = d.y;
+                                    }
+
+                                    function dragged(d) {
+                                        d.fx = d3.event.x;
+                                        d.fy = d3.event.y;
+                                    }
+
+                                    function dragended(d) {
+                                        if (!d3.event.active) simulation.alphaTarget(0);
+                                        d.fx = null;
+                                        d.fy = null;
+                                    }
+
+                                    return d3.drag()
+                                        .on("start", dragstarted)
+                                        .on("drag", dragged)
+                                        .on("end", dragended);
+                                };
+
+                                drawChart('.chart-area', data)
+
+                            </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of Main Content -->
+            </div>
+            <!-- End of Content Wrapper -->
+        </div>
+        <!-- End of Page Wrapper -->
+    </div>
+</div>
+</body>
+</html>
